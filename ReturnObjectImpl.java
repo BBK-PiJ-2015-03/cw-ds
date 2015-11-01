@@ -5,7 +5,21 @@
  * @author PiJ
  */
 public class ReturnObjectImpl implements ReturnObject{
-	ErrorMessage error;
+	private ErrorMessage error;
+	private Object value;
+	
+	/**
+	 * Getters & Setters
+	 */
+	public Object getValue() {
+		return value;
+	}
+
+
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
 
 	public void setError(ErrorMessage error) {
 		this.error = error;
@@ -54,11 +68,13 @@ public class ReturnObjectImpl implements ReturnObject{
 	 *         error
 	 */
 	public Object getReturnValue(){
-		if (!this.getError().equals(this)){
-			return this; // returns the value from the method 
+		if (!this.hasError()){
+			return this.value; // returns the value from the method 
 		} else if (this.hasError()){
 			return null; // returns null as there has been an error
 		} 
 		return null;
 	}
+	
+	
 }

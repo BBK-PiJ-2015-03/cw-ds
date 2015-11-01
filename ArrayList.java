@@ -21,8 +21,16 @@
  */
 public class ArrayList implements List {
 	private Object[] arrayList;
+
 	
-	ReturnObjectImpl access = new ReturnObjectImpl();
+	public Object getArrayElem(int index) {
+		return this.arrayList[index];
+	}
+	
+	public Object[] getArray(){
+		return this.arrayList;
+	}
+
 	
 	public boolean isEmpty(){
 		if (this.size() == 0){
@@ -46,12 +54,22 @@ public class ArrayList implements List {
 	 *         encapsulated in a ReturnObject
 	 */
 	public ReturnObject get(int index){
-		if (index >= this.size() || index < 0){
-			System.out.println("ERROR: Array position is invalid");
-			this.ErrorMessage = "INDEX_OUT_OF_BOUNDS";
-			return ErrorMessage.INDEX_OUT_OF_BOUNDS;
+		ReturnObject returnValue = new ReturnObjectImpl();
+		ReturnObjectImpl access = new ReturnObjectImpl();
+		if (this.isEmpty()){
+			access.setError(ErrorMessage.EMPTY_STRUCTURE);
+			returnValue = access;
+			return returnValue;			
 		}
-		return this.al.arrayList[index];
+		if (index >= this.size() || index < 0){
+			access.setError(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+			returnValue = access;
+			return returnValue;
+		}
+		access.setError(ErrorMessage.NO_ERROR);
+		access.setValue(this.arrayList[index]);
+		returnValue = access;
+		return returnValue;
 	}
 
 	/**
@@ -67,17 +85,31 @@ public class ArrayList implements List {
 	 *         encapsulated in a ReturnObject
 	 */
 	public ReturnObject remove(int index){
-		if (this.get(index).equals(this[index])){ // error will be returned here if false
-		ReturnObject[] tempArray = new ReturnObject[(this.size()-2)];
+		ReturnObject returnValue = new ReturnObjectImpl();
+		ReturnObjectImpl access = new ReturnObjectImpl();
+		ArrayList tempArray = new ArrayList();
+		tempArray.arrayList = new Object[this.size()-2];
+		if (this.isEmpty()){
+			access.setError(ErrorMessage.EMPTY_STRUCTURE);
+			returnValue = access;
+			return returnValue;			
+		}
+		if (this.get(index).equals(ErrorMessage.NO_ERROR)){		
 			for (int i = 0; i < index; i++){
-				tempArray[i] = this[i];
+				tempArray.arrayList[i] = this.arrayList[i];
 			}
 			for (int j = this.size()-1; j > index; j--){
-				tempArray[j] = this[j];
+				tempArray.arrayList[j-1] = this.arrayList[j];
 			}
-			return tempArray; // returns new array with index removed
+			access.setError(ErrorMessage.NO_ERROR);
+			access.setValue(this.arrayList[index]);
+			returnValue = access;
+			this.arrayList = tempArray.arrayList;
+			return returnValue; 
 		}
-		return this; // returns the element (see above comment)
+		access.setError(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+		returnValue = access;
+		return returnValue;
 	}
 	/**
 	 * Adds an element to the list, inserting it at the given
@@ -98,26 +130,30 @@ public class ArrayList implements List {
 	 *         the item added or containing an appropriate error message
 	 */
 	public ReturnObject add(int index, Object item){
-		if (this.get(index).equals(this)){
-			return this;
-		}
-		if (index == this.size()){ // cannot combine with above if statement as error will print twice, unless I use nested if.
-			System.out.println("ERROR: Array position is invalid");
-			return this;			
+		ReturnObject returnValue = new ReturnObjectImpl();
+		ReturnObjectImpl access = new ReturnObjectImpl();
+		if (index >= this.size() || index < 0 || index == this.size()){
+			return this.get(index);
 		}
 		if (item.equals(null)){
-			System.out.println("ERROR: Object cannot be null");
-			return this;			
+			access.setError(ErrorMessage.INVALID_ARGUMENT);
+			returnValue = access;
+			return returnValue;			
 		}
-		ReturnObject[] tempArray = new ReturnObject[this.size()];	
+		ArrayList tempArray = new ArrayList();
+		tempArray.arrayList = new Object[this.size()];
 		for (int i = 0; i < index; i++){
-			tempArray[i] = this[i];
+			tempArray.arrayList[i] = this.arrayList[i];
 		}
-		for (int j = this.size; j > index; j--){
-			tempArray[j] = this[j];
+		for (int j = this.size(); j > index; j--){
+			tempArray.arrayList[j] = this.arrayList[j];
 		}
-		tempArray[index] = item;
-		return tempArray;
+		tempArray.arrayList[index] = item;
+		this.arrayList = tempArray.arrayList;
+		access.setValue(tempArray.arrayList[index]);
+		access.setError(ErrorMessage.NO_ERROR);
+		returnValue = access;
+		return returnValue;
 	}
 
 	/**
@@ -132,16 +168,25 @@ public class ArrayList implements List {
 	 *         the item added or containing an appropriate error message
 	 */
 	public ReturnObject add(Object item){
+		ReturnObject returnValue = new ReturnObjectImpl();
+		ReturnObjectImpl access = new ReturnObjectImpl();
 		if (item.equals(null)){
-			System.out.println("ERROR: Object cannot be null");
-			return this;
+			access.setError(ErrorMessage.INVALID_ARGUMENT);
+			returnValue = access;
+			return returnValue;
 		}
-		ReturnObject[] tempArray = new ReturnObject[this.size()];
+		ArrayList tempArray = new ArrayList();
+		tempArray.arrayList = new Object[this.size()];
 		for (int i = 0; i < this.size()-1; i++){
-			tempArray[i] = this[i];
+			tempArray.arrayList[i] = this.arrayList[i];
 		}
-		tempArray[i] = item;
-		return tempArray;
+		tempArray.arrayList[this.size()-1] = item;
+		this.arrayList = tempArray.arrayList;
+		access.setValue(tempArray.arrayList[this.size()-1]);
+		access.setError(ErrorMessage.NO_ERROR);
+		returnValue = access;
+		return returnValue;
 	}
+	
 
 }

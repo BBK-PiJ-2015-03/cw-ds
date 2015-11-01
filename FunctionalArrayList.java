@@ -1,11 +1,9 @@
 
 public class FunctionalArrayList extends ArrayList implements FunctionalList {
-	String[] arrayList;
+	private Object[] arrayList;
 	
-	ArrayList al = new ArrayList();
-	
-	public String[] getArray(int index){
-		return this.arrayList[index];
+	public void setArray(Object[] arrayList){
+		this.arrayList = arrayList;
 	}
 	
     /**
@@ -17,13 +15,14 @@ public class FunctionalArrayList extends ArrayList implements FunctionalList {
      *         an error if the list is empty.
      */
 	public ReturnObject head() {
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		if(this.al.isEmpty()){
-			temp.error = "ERROR: ArrayList is empty";
-			return temp;
+		ReturnObjectImpl access = new ReturnObjectImpl();
+		if(this.isEmpty()){
+			access.setError(ErrorMessage.EMPTY_STRUCTURE);
+			return access;
 		}
-		temp.result = this.arrayList[0];
-		return temp;
+		access.setError(ErrorMessage.NO_ERROR);
+		access.setValue(this.getArrayElem(0));
+		return access;
 	}
 	
 	 /**
@@ -34,15 +33,16 @@ public class FunctionalArrayList extends ArrayList implements FunctionalList {
      * If the list is empty, another empty list is returned. 
      */
 	public FunctionalList rest() {
-		if(this.al.isEmpty()){
-			return null;
+		ReturnObjectImpl access = new ReturnObjectImpl();
+		FunctionalArrayList tempArray = new FunctionalArrayList();
+		if(this.isEmpty()){
+			return tempArray;
 		}
-		FunctionalArrayList newList = new FunctionalArrayList();
-		newList.arrayList = this.arrayList;
-		for (int i = 0; i < this.al.size()-1 ; i++){
-			newList.arrayList[i] = this.arrayList[i+1];
+		tempArray.setArray(this.arrayList);
+		for (int i = 0; i < this.al.size() ; i++){
+			tempArray.setArray(arrayList[i]) = this.arrayList[i+1];
 		}
-		return newList;
+		return tempArray;
 	}
 
 }
