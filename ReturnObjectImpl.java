@@ -5,16 +5,22 @@
  * @author PiJ
  */
 public class ReturnObjectImpl implements ReturnObject{
+	ErrorMessage error;
+
+	public void setError(ErrorMessage error) {
+		this.error = error;
+	}
+
 
 	/**
 	 * Returns whether there has been an error
 	 * @return whether there has been an error
 	 */
 	public boolean hasError(){
-		if(this.equals(null)){ //For example if object is null there has been an error
-			return true;
-		} else {
+		if(this.error.equals(null)){
 			return false;
+		} else {
+			return true;
 		}
 	}
 
@@ -28,9 +34,9 @@ public class ReturnObjectImpl implements ReturnObject{
 	 */
 	public ErrorMessage getError(){
 		if (!this.hasError()){
-			return NO_ERROR; // returns NO_ERROR if hasError() returns false
+			return ErrorMessage.NO_ERROR; // returns NO_ERROR if hasError() returns false
 		} else {
-			return this; // returns the error message
+			return error; // returns the error message
 		}
 	}
 
@@ -53,6 +59,6 @@ public class ReturnObjectImpl implements ReturnObject{
 		} else if (this.hasError()){
 			return null; // returns null as there has been an error
 		} 
-		return false;
+		return null;
 	}
 }
