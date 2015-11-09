@@ -1,31 +1,39 @@
-
 public class FunctionalLinkedList extends LinkedList implements FunctionalList {
-	String value;
-	FunctionalLinkedList next;
 	
-	LinkedList ll = new LinkedList();
-	
-	public ReturnObject head() {
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		if (ll.head.equals(null)){
-		temp.error = "ERROR: List is empty / head is null";
-		return temp;
-		}
-		temp.result = "Head value is " + ll.head.value;
-		return temp;
-	}
-	
+	/**
+     * Returns the element at the beginning of the list. 
+     * 
+     * If the list is empty, an appropriate error is returned. 
+     *
+     * @return a copy of the element at the beginning of the list or 
+     *         an error if the list is empty.
+     */
+    public ReturnObject head(){
+    	ReturnObjectImpl object = new ReturnObjectImpl();
+    	if (super.getHead() == null){
+    		object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
+    		return object;
+    	}
+    	object.setErrorM(ErrorMessage.NO_ERROR);
+    	object.setObject(super.getHead().getValue());
+    	return object;
+    }
 
-	public FunctionalList rest() {
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		if (ll.head.equals(null)){
-		System.out.println("ERROR: List is empty / head is null");
-		return null;
-		}
-		FunctionalLinkedList newList = new FunctionalLinkedList();
-		for ()
-		temp.result = "Head value is " + ll.head.value;
-		
-	}
-
+    /**
+     * Returns a list with the elements in this list except the
+     * head. The elements must be in the same order. The original list
+     * must not change or be affected by changes in the new list. 
+     * 
+     * If the list is empty, another empty list is returned. 
+     */
+    public FunctionalList rest(){
+    	FunctionalLinkedList restList = new FunctionalLinkedList();
+    	Node copyNode = super.getHead().getNext();
+    	for (int i = 1; i < this.size(); i++){
+    		restList.add(copyNode.getValue());
+    		System.out.println(i + ": " + copyNode.getValue());
+    		copyNode = copyNode.getNext();
+    	}
+    	return restList;
+    }
 }

@@ -1,29 +1,52 @@
-/**
- * A list is a collection of objects that are sorted and can be
- * accessed by index. The first element in the list is at index 0.
- *
- * A list can store objects of any kind, and they can be of different
- * types: Integers, Doubles, String, or even other lists. However,
- * this list cannot store null objects.
- * 
- * There is no limit to the number of elements in the list (provided
- * that there is free memory in the Java Virtual Machine).
- * 
- * Not all operations on a list will always be successful. For
- * example, a programmer may try to remove an element from an empty
- * list, or from a position where there is nothing. Since we hace not
- * covered exceptions yet, we need another mechanism to report
- * errors. In order to do that, methods of this list will return a
- * {@see ReturnObject} that will contain either an object or an error
- * value of the right kind (as defined in {@see ErrorMessage}). 
- * 
- * @author PiJ
- */
+
 public class LinkedList implements List {
-	FunctionalLinkedList head;
-	FunctionalLinkedList tail;
+	private Node head;
+	private Node tail;
+	private int lastPosition = -1;
 	
-	FunctionalLinkedList ll = new FunctionalLinkedList();
+	/**
+	 * Get the last position in the list
+	 * first position is 0
+	 * @return the last position in the list
+	 */
+	public int getLastPosition() {
+		return lastPosition;
+	}
+	/**
+	 * Increment or decrement last position in the list
+	 * @param new last position in the list
+	 */
+	public void setLastPosition(int lastPosition) {
+		this.lastPosition = lastPosition;
+	}
+	/**
+	 * Gets the first node in the list
+	 * @return head node
+	 */
+	public Node getHead() {
+		return head;
+	}
+	/**
+	 * Sets the first node in the list
+	 * @param new node to be set as head
+	 */
+	public void setHead(Node head) {
+		this.head = head;
+	}
+	/**
+	 * Gets the last node in the list
+	 * @return tail node
+	 */
+	public Node getTail() {
+		return tail;
+	}
+	/**
+	 * Sets the last node in the list
+	 * @param new node to be set as tail
+	 */
+	public void setTail(Node tail) {
+		this.tail = tail;
+	}
 
 	/**
 	 * Returns true if the list is empty, false otherwise. 
@@ -31,7 +54,7 @@ public class LinkedList implements List {
 	 * @return true if the list is empty, false otherwise. 
 	 */
 	public boolean isEmpty(){
-		if(head.next.equals(null)){
+		if (this.lastPosition == -1){
 			return true;
 		}
 		return false;
@@ -43,16 +66,7 @@ public class LinkedList implements List {
 	 * @return the number of items currently in the list
 	 */
 	public int size(){
-		if(this.isEmpty()){
-			return 0;
-		}
-		LinkedList tempList = head;
-		int count = 0;
-		while (!tempList.next.equals(null)){
-			tempList = tempList.next;
-			count++;
-		}
-		return count;
+		return (this.lastPosition+1);
 	}
 
 	/**
@@ -66,17 +80,26 @@ public class LinkedList implements List {
 	 *         encapsulated in a ReturnObject
 	 */
 	public ReturnObject get(int index){
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		if (index >= this.size() || index < 0){
-			temp.error = "ERROR: Position given in paramaters is invalid";
-			return temp;
+		ReturnObjectImpl object = new ReturnObjectImpl();
+		if (index < 0){
+			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+			return object;
 		}
-		FunctionalLinkedList tempList = head;
+		if (this.size() == 0){
+			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
+			return object;
+		}
+		if (index > this.lastPosition){
+			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+			return object;
+		}
+		Node tempHead = this.head;
 		for (int i = 0; i < index; i++){
-			tempList = tempList.ll.next;
+			tempHead = tempHead.getNext();
 		}
-		temp.result = "Value at index " + index + " is " + tempList.ll.value;
-		return temp;
+		object.setObject(tempHead.getValue());
+		object.setErrorM(ErrorMessage.NO_ERROR);
+		return object;	
 	}
 
 	/**
@@ -85,30 +108,65 @@ public class LinkedList implements List {
 	 * element must be updated accordignly.
 	 * 
 	 * If the index is negative or greater or equal than the size of
-	 * the list, then an appropriate error must be returned.
+	 * the list, then an appropriate error must be returned.  
+	 * 
+	 * ********** The above is a bit confusing - so if we want to remove 
+	 * ********** the last node we cannot as index will be equal to the list
+	 * ********** I misunderstand this instruction
 	 * 
 	 * @param index the position in the list of the item to be retrieved
 	 * @return the element or an appropriate error message, 
 	 *         encapsulated in a ReturnObject
 	 */
-	public ReturnObject remove(int index){
-	if (!this.get(index).equals(null)){
-		LinkedList tempList = head;
-		for (int i = 0; i < index-1; i++){
-			tempList = tempList.ll.next;
+	public ReturnObject remove(int index) {
+		ReturnObjectImpl object = new ReturnObjectImpl();
+
+		if (index > this.lastPosition || index < 0){  
+			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+			return object;
 		}
-		tempList.ll.next = tempList.ll.next.next;
-		tempList.ll.next.next = null;
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		temp.result = "Value at index " + index + "has been removed from the list.";
-		return temp;
+		if (this.size() == 0){
+			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
+			return object;
+		}
+		object.setErrorM(ErrorMessage.NO_ERROR);
+		if (this.lastPosition == 0 && index == 0){
+			object.setObject(this.head.getValue());
+			this.tail = null;
+			this.head = null;
+			this.lastPosition--;
+			return object;
+		}
+		if (index == this.lastPosition){
+			object.setObject(this.tail.getValue());
+			this.tail = tail.getPrev();
+			this.tail.setNext(null);
+			this.lastPosition--;
+			return object;
+		}
+		if (index == 0){
+			object.setObject(this.head.getValue());
+			this.head.getNext().setPrev(null);
+			Node targetNode = this.head;
+			this.head = this.head.getNext();
+			targetNode.setNext(null);
+			this.lastPosition--;
+			return object;
+		}
+		Node targetNode = this.head;
+		for (int i = 0; i < index; i++){
+			targetNode = targetNode.getNext();
+		}
+		targetNode = targetNode.getNext();
+		object.setObject(targetNode.getValue());
+		targetNode.getPrev().setNext(targetNode.getNext());
+		targetNode.getNext().setPrev(targetNode.getPrev());
+		targetNode.setNext(null);
+		targetNode.setPrev(null);
+		this.lastPosition++;
+		return object;
 	}
-	ReturnObjectImpl temp = new ReturnObjectImpl();
-	temp.error = "ERROR: Index " + index +  " is not valid.";
-	return null;
-
-	}
-
+	
 	/**
 	 * Adds an element to the list, inserting it at the given
 	 * position. The indeces of elements at and after that position
@@ -128,20 +186,53 @@ public class LinkedList implements List {
 	 *         the item added or containing an appropriate error message
 	 */
 	public ReturnObject add(int index, Object item){
-		if (!this.get(index).equals(null) && !item.equals(null)){
-			LinkedList tempList = head;
-			FunctionalLinkedList newNode = new FunctionalLinkedList();
-			newNode.ll.value = (String) item;
-			for (int i = 0; i < index-1; i++){
-				tempList = tempList.ll.next;
-			}
-			newNode.ll.next = tempList.ll.next;
-			tempList.ll.next = newNode;
-			return null; //double check as need to return empty
+		ReturnObjectImpl object = new ReturnObjectImpl();
+		Node newNode = new Node(item);
+		if (item == null){
+			object.setErrorM(ErrorMessage.INVALID_ARGUMENT);
+			System.out.println("Point 1");
+			return object;
 		}
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		temp.error = "ERROR: Index " + index + " is not valid";
-		return temp;
+		if (index > this.lastPosition || index < 0){  
+			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+			System.out.println("Point 2");
+			return object;
+		}
+		object.setErrorM(ErrorMessage.NO_ERROR);
+		if (this.lastPosition == -1 && index == 0){
+			System.out.println("Point 3");
+			this.head.setNext(newNode);
+			newNode.setPrev(this.head);
+			this.tail = newNode;
+			this.lastPosition++;
+			return object;
+		}
+		if (index == this.lastPosition){
+			System.out.println("Point 4");
+			newNode.setPrev(this.tail);
+			this.tail.setNext(newNode);
+			this.tail = newNode;
+			this.lastPosition++;
+			return object;
+		}
+		if (this.lastPosition == -1){
+			System.out.println("Point 5");
+			this.head = newNode;
+			this.tail = newNode;
+			this.lastPosition++;
+			return object;
+		}
+		System.out.println("Point 6");
+		Node targetNode = this.head;
+		for (int i = 0; index != i; i++){
+			targetNode = targetNode.getNext();
+		}
+		newNode.setNext(targetNode);
+		targetNode.getPrev().setNext(newNode);
+		targetNode.getPrev().getNext().setPrev(targetNode.getPrev());
+		targetNode.setPrev(targetNode.getPrev().getNext());
+		this.lastPosition++;
+		return object;
 	}
 
 	/**
@@ -156,20 +247,24 @@ public class LinkedList implements List {
 	 *         the item added or containing an appropriate error message
 	 */
 	public ReturnObject add(Object item){
-		if (!item.equals(null)){
-			FunctionalLinkedList tempList = head;
-			FunctionalLinkedList newNode = new FunctionalLinkedList();
-			newNode.ll.value = (String) item;
-			for (int i = 0; !tempList.ll.next.equals(null); i++){
-				tempList = tempList.ll.next;
-			}
-			tail = newNode;
-			tempList.ll.next = newNode;
-			return null;
+		ReturnObjectImpl object = new ReturnObjectImpl();
+		Node newNode = new Node(item);
+		if (item == null){
+			System.out.println("Point 1");
+			object.setErrorM(ErrorMessage.INVALID_ARGUMENT);
+			return object;
 		}
-		ReturnObjectImpl temp = new ReturnObjectImpl();
-		temp.error = "ERROR: Value " + item + "Could not be been added to list.";
-		return temp;
+		object.setErrorM(ErrorMessage.NO_ERROR);
+		if (this.isEmpty()){
+			this.head = newNode;
+			this.tail = newNode;
+			this.lastPosition++;
+			return object;
+		}
+		this.tail.setNext(newNode);
+		newNode.setPrev(tail);
+		this.tail = newNode;
+		this.lastPosition++;
+		return object;
 	}
-
 }

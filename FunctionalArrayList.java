@@ -1,12 +1,14 @@
 
 public class FunctionalArrayList extends ArrayList implements FunctionalList {
-	private Object[] arrayList;
 	
-	public void setArray(Object[] arrayList){
-		this.arrayList = arrayList;
+	public FunctionalArrayList(Object[] newArray){
+		super(newArray);
+	}
+	public FunctionalArrayList(){
+		super();
 	}
 	
-    /**
+	/**
      * Returns the element at the beginning of the list. 
      * 
      * If the list is empty, an appropriate error is returned. 
@@ -14,35 +16,35 @@ public class FunctionalArrayList extends ArrayList implements FunctionalList {
      * @return a copy of the element at the beginning of the list or 
      *         an error if the list is empty.
      */
-	public ReturnObject head() {
-		ReturnObjectImpl access = new ReturnObjectImpl();
-		if(this.isEmpty()){
-			access.setError(ErrorMessage.EMPTY_STRUCTURE);
-			return access;
-		}
-		access.setError(ErrorMessage.NO_ERROR);
-		access.setValue(this.getArrayElem(0));
-		return access;
-	}
-	
-	 /**
+    public ReturnObject head(){
+    	ReturnObjectImpl object = new ReturnObjectImpl();
+    	if (super.isEmpty()){
+    		object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
+    		return object;
+    	}
+    	object.setErrorM(ErrorMessage.NO_ERROR);
+    	object.setObject(super.getValue(0));
+    	return object;
+    }
+
+    /**
      * Returns a list with the elements in this list except the
      * head. The elements must be in the same order. The original list
      * must not change or be affected by changes in the new list. 
      * 
      * If the list is empty, another empty list is returned. 
      */
-	public FunctionalList rest() {
-		ReturnObjectImpl access = new ReturnObjectImpl();
-		FunctionalArrayList tempArray = new FunctionalArrayList();
-		if(this.isEmpty()){
-			return tempArray;
-		}
-		tempArray.setArray(this.arrayList);
-		for (int i = 0; i < this.al.size() ; i++){
-			tempArray.setArray(arrayList[i]) = this.arrayList[i+1];
-		}
-		return tempArray;
-	}
-
+    public FunctionalList rest(){
+		System.out.println("Rest Running...");
+    	FunctionalArrayList restList = new FunctionalArrayList();
+    	if (this.isEmpty()){
+    		System.out.println("Empty list");
+    		return restList;
+    	}
+    	for (int i = 1; i < this.size()-1; i++){ //double check
+    		restList.add(this.getValue(i+1));
+    		System.out.println(i + ": " + restList.get(i).getReturnValue());
+    	}
+    	return restList;
+    }
 }

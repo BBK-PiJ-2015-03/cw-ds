@@ -5,33 +5,45 @@
  * @author PiJ
  */
 public class ReturnObjectImpl implements ReturnObject{
-	private ErrorMessage error;
-	private Object value;
+	private ErrorMessage theErrorMessage;
+	private Object returnObject;
+	
 	
 	/**
-	 * Getters & Setters
+	 * Gets the error message
+	 * @return the error message
 	 */
-	public Object getValue() {
-		return value;
+	public ErrorMessage getErrorM() {
+		return theErrorMessage;
 	}
-
-
-	public void setValue(Object value) {
-		this.value = value;
+	/**
+	 * Sets the error message
+	 * @param theErrorMessage
+	 */
+	public void setErrorM(ErrorMessage theErrorMessage) {
+		this.theErrorMessage = theErrorMessage;
 	}
-
-
-	public void setError(ErrorMessage error) {
-		this.error = error;
+	/**
+	 * Gets the object
+	 * @return the object
+	 */
+	public Object getObject() {
+		return returnObject;
 	}
-
+	/**
+	 * Sets the object
+	 * @param returnObject
+	 */
+	public void setObject(Object returnObject) {
+		this.returnObject = returnObject;
+	}
 
 	/**
-	 * Returns whether there has been an error
-	 * @return whether there has been an error
+	 * Checks whether there has been an error
+	 * @return true if there has been an error, otherwise false.
 	 */
 	public boolean hasError(){
-		if(this.error.equals(null)){
+		if(this.theErrorMessage == ErrorMessage.NO_ERROR || this.theErrorMessage == null){
 			return false;
 		} else {
 			return true;
@@ -47,10 +59,10 @@ public class ReturnObjectImpl implements ReturnObject{
 	 * @return the error message
 	 */
 	public ErrorMessage getError(){
-		if (!this.hasError()){
-			return ErrorMessage.NO_ERROR; // returns NO_ERROR if hasError() returns false
+		if (this.hasError() == false){
+			return ErrorMessage.NO_ERROR;
 		} else {
-			return error; // returns the error message
+			return this.theErrorMessage;
 		}
 	}
 
@@ -68,13 +80,9 @@ public class ReturnObjectImpl implements ReturnObject{
 	 *         error
 	 */
 	public Object getReturnValue(){
-		if (!this.hasError()){
-			return this.value; // returns the value from the method 
-		} else if (this.hasError()){
-			return null; // returns null as there has been an error
-		} 
-		return null;
+		if (this.hasError() == true){
+			return null;
+		}
+		return this.returnObject;  //DOUBLE CHECK THIS 
 	}
-	
-	
 }
