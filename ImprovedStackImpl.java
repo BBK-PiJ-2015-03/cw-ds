@@ -39,7 +39,7 @@ public class ImprovedStackImpl implements ImprovedStack {
 
 	public ReturnObject top() {
 		ReturnObjectImpl object = new ReturnObjectImpl();
-		if(this.isEmpty()){
+		if(this.arrayStack.isEmpty()){
 			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
 			return object;
 		}
@@ -77,7 +77,6 @@ public class ImprovedStackImpl implements ImprovedStack {
 
 	public void remove(Object object) {
 		if(this.arrayStack.isEmpty()){
-			//do nothing
 		} else {
 			for(int i = 0; i < this.arrayStack.size(); i++){
 				if(this.arrayStack.get(i).getReturnValue().equals(object)){

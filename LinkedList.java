@@ -121,7 +121,7 @@ public class LinkedList implements List {
 	public ReturnObject remove(int index) {
 		ReturnObjectImpl object = new ReturnObjectImpl();
 		if (this.size() == 0){
-			if (index > this.lastPosition || index < 0){  
+			if (index < 0){  
 				object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
 				return object;
 			}
