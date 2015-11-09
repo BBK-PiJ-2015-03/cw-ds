@@ -16,7 +16,12 @@
 	 */
 public class ImprovedStackImpl implements ImprovedStack {
 	private ArrayList arrayStack;
-
+	
+	public ImprovedStackImpl(ArrayList newArray){
+		this.arrayStack = newArray;
+	}
+	public ImprovedStackImpl(){
+	}
 	public boolean isEmpty() {
 		if(this.arrayStack.isEmpty()){
 			return true;
@@ -51,9 +56,9 @@ public class ImprovedStackImpl implements ImprovedStack {
 			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
 			return object;
 		}
-		Object targetValue = this.arrayStack.get(this.size()).getReturnValue();
+		Object targetValue = this.arrayStack.get(this.arrayStack.size()-1);
 		object.setObject(targetValue);
-		this.arrayStack.remove(this.size());
+		this.arrayStack.remove(this.arrayStack.size()-1);
 		object.setErrorM(ErrorMessage.NO_ERROR);
 		return object;
 	}

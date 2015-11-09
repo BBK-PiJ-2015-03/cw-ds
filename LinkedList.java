@@ -120,13 +120,16 @@ public class LinkedList implements List {
 	 */
 	public ReturnObject remove(int index) {
 		ReturnObjectImpl object = new ReturnObjectImpl();
-
-		if (index > this.lastPosition || index < 0){  
-			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+		if (this.size() == 0){
+			if (index > this.lastPosition || index < 0){  
+				object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
+				return object;
+			}
+			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
 			return object;
 		}
-		if (this.size() == 0){
-			object.setErrorM(ErrorMessage.EMPTY_STRUCTURE);
+		if (index > this.lastPosition || index < 0){  
+			object.setErrorM(ErrorMessage.INDEX_OUT_OF_BOUNDS);
 			return object;
 		}
 		object.setErrorM(ErrorMessage.NO_ERROR);

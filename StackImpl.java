@@ -16,7 +16,6 @@ public class StackImpl extends AbstractStack{
 	 /**
      * The data structure where the elements on the stack are stored. 
      */
-	public Object[] stackArray = new Object[1000];
 
     /**
      * Creates a new abstract stack using the provided list as the
@@ -87,6 +86,7 @@ public class StackImpl extends AbstractStack{
 		ReturnObject object = new ReturnObjectImpl();
 		if(this.internalList.isEmpty()){
 			object = this.internalList.get(this.internalList.size()-1);
+			((ReturnObjectImpl) object).setErrorM(ErrorMessage.EMPTY_STRUCTURE);
 			return object;
 		}
 		object = this.internalList.get(this.internalList.size()-1);
